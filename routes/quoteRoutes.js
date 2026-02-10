@@ -1,5 +1,9 @@
 
-import express from "express";
+//I did not know how to edit the existing code to fit the newQuote collection, so I asked Claude for assistance, the code is below the first commented out code I was working on. I have left the original code in place.
+// 
+
+
+/*import express from "express";
 import { ObjectId } from "mongodb";
 import db from "../db/conn.js";
 
@@ -7,16 +11,16 @@ const router = express.Router();
 
 
 //GET
-router.get("/agg", async (req, res) => {//Add at the end of http://localhost:3000/api/db/agg
-  let collection = db.collection("grades");
+router.get("/agg", async (_req, res) => {//Add at the end of http://localhost:3000/api/db/agg
+  let collection = db.collection("quotes");
 
   let result = await collection
     .aggregate([
       {
         $project: {
           _id: 0,
-          class_id: 1,
-          learner_id: 1,
+          author_id: 1,
+          category_id: 1,
           avg: {
             $avg: "$scores.score",
           },
@@ -279,4 +283,139 @@ router.delete("/class/:id", async (req, res) => {
   else res.send(result).status(200);
 });
 
+export default router;*/
+
+
+
+
+
+import express from "express";
+import { ObjectId } from "mongodb";
+import db from "../db/conn.js";
+
+const router = express.Router();
+
+// GET all quotes
+router.get("/", async (_req, res) => {
+  let collection = db.collection("quotes");
+  let result = await collection.find({}).toArray();
+  res.json(result);
+});
+
+// GET random quote
+router.get("/random", async (_req, res) => {
+  let collection = db.collection("quotes");
+  
+  let result = await collection
+    .aggregate([
+      { $sample: { size: 1 } }
+    ])
+    .toArray();
+  
+  res.json(result[0]);
+});
+
+// GET quotes by author
+router.get("/author/:author", async (req, res) => {
+  let collection = db.collection("quotes");
+  
+  let result = await collection
+    .find({ author: req.params.author })
+    .toArray();
+  
+  res.json(result);
+});
+
+// GET quotes grouped by author with count
+router.get("/agg/by-author", async (_req, res) => {
+  let collection = db.collection("quotes");
+
+  let result = await collection
+    .aggregate([
+      {
+        $group: {
+          _id: "$author",
+          count: { $sum: 1 },
+          quotes: { $push: "$text" }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ])
+    .toArray();
+
+  res.json(result);
+});
+
+// GET search quotes by text
+router.get("/search/:searchTerm", async (req, res) => {
+  let collection = db.collection("quotes");
+  
+  let result = await collection
+    .find({
+      text: { $regex: req.params.searchTerm, $options: "i" }
+    })
+    .toArray();
+  
+  res.json(result);
+});
+
+// Create new quote (POST)
+router.post("/", async (req, res) => {
+  let newQuote = {
+    text: req.body.text,
+    author: req.body.author
+  };
+
+  let collection = db.collection("quotes");
+  let result = await collection.insertOne(newQuote);
+  
+  res.status(201).json(result);
+});
+
+// Update quote by ID (PATCH)
+router.patch("/:id", async (req, res) => {
+  let collection = db.collection("quotes");
+  
+  let update = {
+    $set: {}
+  };
+  
+  if (req.body.text) update.$set.text = req.body.text;
+  if (req.body.author) update.$set.author = req.body.author;
+  
+  let result = await collection.updateOne(
+    { _id: new ObjectId(req.params.id) },
+    update
+  );
+  
+  res.json(result);
+});
+
+// Delete quote by ID (DELETE)
+router.delete("/:id", async (req, res) => {
+  let collection = db.collection("quotes");
+  
+  let result = await collection.deleteOne(
+    { _id: new ObjectId(req.params.id) }
+  );
+  
+  res.json(result);
+});
+
 export default router;
+
+/*
+Key changes made:
+- **Removed grade-specific logic** (learner_id, class_id, scores)
+- **Simplified aggregation** for quotes grouped by author
+- **Added `/random` endpoint** using `$sample` aggregation to get a random quote
+- **Added `/author/:author` endpoint** to filter quotes by author
+- **Added `/search/:searchTerm` endpoint** for text search
+- **Simplified POST/PATCH/DELETE** operations for the simpler quote schema
+- **Changed status code** for POST from 204 to 201 (Created)
+
+This gives you a complete CRUD API for your inspirational quotes!*/
+
+
