@@ -15,7 +15,9 @@ Objectives
 
 
 //////////////////////////////////////////////////////////////////////////////////////
+
 GOAL: To create a database for inspirational quotes that people users can access.
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 RESOURCE CODE:
@@ -46,12 +48,15 @@ I uploaded some files and created folders and added files because I was not able
 push files via Git Bash.
 
 //////////////////////////////////////////////////////////////////////////////////////
+
 EDITING PROCESS: THE SCRIPT WORKS!
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 quoteRoutes.js => I updated the quoteRoutes.js but ran into issues with the original 
 aggregate data. I asked Claude for assistance. I commented out my work and placed the
 new script beneath it.
+
 
 
 
