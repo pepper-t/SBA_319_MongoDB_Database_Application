@@ -40,8 +40,18 @@ npm i express mongo dotenv
 to start the server I type 'nodemon run index.js'
 //////////////////////////////////////////////////////////////////////////////////////
 
+GIT HUB COMMITS
 
+I uploaded some files and created folders and added files because I was not able to 
+push files via Git Bash.
 
+//////////////////////////////////////////////////////////////////////////////////////
+EDITING PROCESS: THE SCRIPT WORKS!
+//////////////////////////////////////////////////////////////////////////////////////
+
+quoteRoutes.js => I updated the quoteRoutes.js but ran into issues with the original 
+aggregate data. I asked Claude for assistance. I commented out my work and placed the
+new script beneath it.
 
 
 
